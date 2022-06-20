@@ -35,11 +35,37 @@ const User = () => {
   return <div>User:{contextValue?.appState?.user?.name}</div>;
 };
 
+/**
+ * 用来规范state的创建流程
+ * @param {*} state
+ * @param {*} param1
+ * @returns
+ */
+const reducer = (state, { type, payload }) => {
+  switch (type) {
+    case 'updateUser':
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          ...payload,
+        },
+      };
+    default:
+      return state;
+  }
+};
+
 const UserModifier = () => {
   const { appState, setAppState } = useContext(appContext);
   const onChange = (e) => {
-    appState.user.name = e.target.value;
-    setAppState({ ...appState });
+    // const newState = reducer(appState, 'updateUser', { name: e.target.value });
+    setAppState(
+      reducer(appState, {
+        type: 'updateUser',
+        payload: { name: e.target.value },
+      })
+    );
   };
 
   return (
